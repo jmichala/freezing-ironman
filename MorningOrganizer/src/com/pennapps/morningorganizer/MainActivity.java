@@ -2,17 +2,17 @@ package com.pennapps.morningorganizer;
 
 import java.util.Calendar;
 
-import android.os.Bundle;
-import android.os.SystemClock;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.View;
-import android.content.Intent;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -26,13 +26,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
 	BroadcastReceiver broadcastReceiver;
 	AlarmManager alarmManager;
 	String informationString = "";
-	
+	Handler errorHandler;
+	Nuance nuanceObject;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+		nuanceObject = new Nuance();
 		//Assign listener to the button
 		findViewById(R.id.startButton).setOnClickListener(this);
 		
@@ -52,6 +53,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 				//   informationString
 				
 				//3. Hemanth put your shit here
+				String debugString = "hi world";
+				
+				nuanceObject.initializeSpeechKit(c, errorHandler);
+				
+				nuanceObject.speakTheString(debugString, c);
+				
 				
 				//Debug message to make sure alarm shit is working
 				Toast.makeText(c, "The alarm worked!", Toast.LENGTH_LONG).show();
@@ -88,6 +95,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 	{
 		alarmManager.cancel(pendingIntent);
 		unregisterReceiver(broadcastReceiver);
+		nuanceObject.closeSpeechKit();
 		super.onDestroy();
 	}
 
